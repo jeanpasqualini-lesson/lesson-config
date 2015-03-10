@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <string>lol</string>
+    <boolean>true</boolean>
+    <failovers>
+        <failovers>8</failovers>
+    </failovers>
+    <enum>un</enum>
+    <integer>10</integer>
+    <float>5.5</float>
+    <variable>5</variable>
+    <virgules>1,2,3,4,5</virgules>
+    <driver>mysql</driver>
+</root>

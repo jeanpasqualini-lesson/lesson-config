@@ -1,0 +1,22 @@
+{
+  "name": "lesson/config",
+  "description": "description_text",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "author's name",
+      "email": "email@example.com"
+    }
+  ],
+  "autoload" : {
+     "psr-4" :
+     {
+       "" : "src/"
+     }
+  },
+  "require": {
+    "symfony/config": "2.7.x-dev",
+    "symfony/yaml": "2.7.x-dev"
+  }
+}

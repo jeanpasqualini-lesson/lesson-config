@@ -1,0 +1,21 @@
+string: texte
+boolean: true
+enum: "deux"
+integer: 10
+float: 5.5
+variable: ["une variable"]
+db:
+    driver: pdo
+    host: localhost
+    username: app8555
+    password: 8sqdqs56
+dbs:
+    - { name: un, driver: pdo, host: mocalhost, username: biapp885, password: 588zdza }
+    - { name: deux, driver: pdo, host: mocalhost, username: biapp885, password: 588zdza }
+failovers: [15,25,65]
+cannotBeEmpty: "a"
+treatLike: true
+cannotBeOverwritten: un
+performNoDeepMerging: [1,2]
+virgules: "1,2,3,4,5,6"
+driver: "mysql"
