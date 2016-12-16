@@ -1,6 +1,6 @@
 <?php
 
-include "../vendor/autoload.php";
+include __DIR__."/../vendor/autoload.php";
 
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
