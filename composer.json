@@ -17,6 +17,7 @@
   },
   "require": {
     "symfony/config": "3.0.*",
-    "symfony/yaml": "3.0.*"
+    "symfony/yaml": "3.0.*",
+    "phpunit/phpunit": "^5.7"
   }
 }

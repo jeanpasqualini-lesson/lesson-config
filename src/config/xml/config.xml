@@ -11,4 +11,6 @@
     <variable>5</variable>
     <virgules>1,2,3,4,5</virgules>
     <driver>mysql</driver>
+    <perform-no-deep-merging>1</perform-no-deep-merging>
+    <perform-no-deep-merging>2</perform-no-deep-merging>
 </root>

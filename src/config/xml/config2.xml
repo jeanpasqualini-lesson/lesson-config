@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-
+    <perform-no-deep-merging>3</perform-no-deep-merging>
+    <perform-no-deep-merging>4</perform-no-deep-merging>
+    <perform-no-deep-merging>5</perform-no-deep-merging>
 </root>

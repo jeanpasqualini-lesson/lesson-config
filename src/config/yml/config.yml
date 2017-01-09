@@ -16,6 +16,6 @@ failovers: [15,25,65]
 cannotBeEmpty: "a"
 treatLike: true
 cannotBeOverwritten: un
-performNoDeepMerging: [1,2]
+perform-no-deep-merging: [1,2]
 virgules: "1,2,3,4,5,6"
 driver: "mysql"

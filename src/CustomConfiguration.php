@@ -81,10 +81,10 @@ class CustomConfiguration implements ConfigurationInterface {
                 ->scalarNode("cannotBeOverwritten")
                     ->cannotBeOverwritten()
                 ->end()
-                ->arrayNode("performNoDeepMerging")
+                ->arrayNode("perform_no_deep_merging")
                     ->performNoDeepMerging() // Return 3, 4, 5 and not 1, 2, 3, 4, 5
-                    ->prototype("scalar")
-                    ->end()
+                        ->prototype("scalar")
+                        ->end()
                 ->end()
                 ->scalarNode("driver")
                     ->validate()
