@@ -428,6 +428,38 @@ EVBUFFER_EOF;
         ), $config);
     }
 
+    public function testNormalizeKeys()
+    {
+        // By default key defined normalized (- to _)
+
+        // Disable normalizeKeys
+
+        $this->setExpectedException(InvalidConfigurationException::class);
+
+        $this->rootNode
+            ->normalizeKeys(false)
+            ->children()
+                ->scalarNode('un_chat')->isRequired()->end()
+            ->end()
+        ;
+
+        $yaml = <<<EVBUFFER_EOF
+un-chat: perle
+EVBUFFER_EOF;
+
+        $config = $this->process(
+            $this->treeBuilder->buildTree(),
+            $yaml
+        );
+
+        $this->assertEquals(
+            array(
+                'un_chat' => 'perle'
+            ),
+            $config
+        );
+    }
+
     public function testFixXmlConfig()
     {
         $this->rootNode
@@ -456,8 +488,8 @@ EVBUFFER_EOF;
 -----
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <chats>blue</chats>
-    <chats>yellow</chats>
+    <chat>blue</chat>
+    <chat>yellow</chat>
 </root>
 EVBUFFER_EOF;
 
@@ -470,4 +502,85 @@ EVBUFFER_EOF;
 
         $this->assertEquals(array('chats' => array('red', 'blue', 'yellow')), $config);
     }
+
+    public function testAddDefaultsIfNotSet()
+    {
+        $this->rootNode
+            ->children()
+                ->scalarNode('name')
+                    ->defaultValue('value')
+                ->end()
+                ->arrayNode('settings_with_adddefaultifnotset')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('name')
+                            ->isRequired()
+                            ->cannotBeEmpty()
+                             ->defaultValue('value')
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('settings_without_adddefaultifnotset')
+                    ->children()
+                        ->scalarNode('name')
+                            ->isRequired()
+                            ->cannotBeEmpty()
+                             ->defaultValue('value')
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+
+        $yaml = "";
+
+        $config = $this->process(
+            $this->treeBuilder->buildTree(),
+            $yaml
+        );
+
+        $this->assertEquals(array(
+            'name' => 'value',
+            'settings_with_adddefaultifnotset' => array('name' => 'value')
+        ), $config);
+    }
+
+    public function testConfig()
+    {
+        return;
+        $this->rootNode
+                ->fixXmlConfig('chat')
+                ->children()
+                    ->arrayNode('chats')
+                        ->children()
+                            ->scalarNode('name')->end()
+                        ->end()
+                    ->end()
+                ->end();
+
+        $yaml = '';
+
+        $xml = <<<EVBUFFER_EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <chat>
+        <name>perle</name>
+    </chat>
+    <chat name="ptirouis"/>
+</root>
+EVBUFFER_EOF;
+
+        $config = $this->process(
+            $this->treeBuilder->buildTree(),
+            $yaml,
+            $xml
+        );
+
+        $this->assertEquals(array(
+            'chats' => array(
+                array('name' => 'perle'),
+                array('name' => 'ptirouis')
+            )
+        ), $config);
+    }
+
 }
