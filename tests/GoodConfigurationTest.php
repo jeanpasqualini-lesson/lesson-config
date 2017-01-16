@@ -407,7 +407,6 @@ EVBUFFER_EOF;
 </root>
 EVBUFFER_EOF;
 
-
         $config = $this->process(
             $this->treeBuilder->buildTree(),
             $yaml,
@@ -520,6 +519,20 @@ EVBUFFER_EOF;
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('settings_with_adddefaultifnotset_with_multiple_level')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('array')
+                            ->children()
+                                ->scalarNode('name')
+                                    ->isRequired()
+                                    ->cannotBeEmpty()
+                                    ->defaultValue('value')
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
                 ->arrayNode('settings_without_adddefaultifnotset')
                     ->children()
                         ->scalarNode('name')
@@ -540,24 +553,31 @@ EVBUFFER_EOF;
 
         $this->assertEquals(array(
             'name' => 'value',
+            'settings_with_adddefaultifnotset_with_multiple_level' => array(),
             'settings_with_adddefaultifnotset' => array('name' => 'value')
         ), $config);
     }
 
-    public function testConfig()
+    public function testMultipleTypeOfConfigurationXml()
     {
-        return;
         $this->rootNode
                 ->fixXmlConfig('chat')
                 ->children()
                     ->arrayNode('chats')
-                        ->children()
-                            ->scalarNode('name')->end()
+                        ->prototype('array')
+                            ->children()
+                                ->scalarNode('name')->end()
+                            ->end()
                         ->end()
                     ->end()
                 ->end();
 
-        $yaml = '';
+        $yaml = <<<EVBUFFER_EOF
+chats:
+    - { name: perle }
+    - { name: ptirouis }
+EVBUFFER_EOF;
+
 
         $xml = <<<EVBUFFER_EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -581,6 +601,97 @@ EVBUFFER_EOF;
                 array('name' => 'ptirouis')
             )
         ), $config);
+    }
+
+    public function testCanBeEnabled()
+    {
+        $this->rootNode
+            ->children()
+                ->arrayNode('array')
+                    ->canBeEnabled()
+                    ->children()
+                        ->scalarNode('color')
+                            ->isRequired()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+
+        $yaml = <<<EVBUFFER_EOF
+EVBUFFER_EOF;
+
+        $config = $this->process(
+            $this->treeBuilder->buildTree(),
+            $yaml
+        );
+
+        $this->assertEquals(array('array' => array('enabled' => false)), $config);
+    }
+
+    public function testCanBeDisabled()
+    {
+        $this->rootNode
+            ->children()
+                ->arrayNode('array')
+                    ->canBeDisabled()
+                    ->children()
+                        ->scalarNode('color')
+                            ->defaultValue('red')
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+
+        $yaml = <<<EVBUFFER_EOF
+array:
+  enabled: false
+EVBUFFER_EOF;
+
+        $config = $this->process(
+            $this->treeBuilder->buildTree(),
+            $yaml
+        );
+
+        $this->assertEquals(array('array' => array('enabled' => false, 'color' => 'red')), $config);
+    }
+
+    public function testIgnoreExtraKeys()
+    {
+        $this->rootNode->ignoreExtraKeys($remove=false);
+
+        $yaml = <<<EVBUFFER_EOF
+game: boy
+EVBUFFER_EOF;
+
+        $config = $this->process(
+            $this->treeBuilder->buildTree(),
+            $yaml
+        );
+
+        $this->assertEquals(array('game' => 'boy'), $config);
+    }
+
+    public function testCanBeUnset()
+    {
+        // Untested
+
+        $this->rootNode
+            ->children()
+                ->arrayNode('array')
+                ->canBeUnset()
+                    ->prototype('scalar')
+                    ->end()
+                ->end()
+            ->end();
+
+        $yaml = '';
+
+        $config = $this->process(
+            $this->treeBuilder->buildTree(),
+            $yaml
+        );
+
+        $this->assertEquals(array('array' => array()), $config);
     }
 
 }
